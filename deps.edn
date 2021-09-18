@@ -1,0 +1,5 @@
+{:paths ["src" "resources"]
+ :deps {org.clojure/clojure {:mvn/version "1.10.3"}}
+ :aliases
+ {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.5.0" :git/sha "7d77952"}}
+          :ns-default build}}}
