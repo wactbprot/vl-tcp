@@ -2,4 +2,9 @@
  :deps {org.clojure/clojure {:mvn/version "1.10.3"}}
  :aliases
  {:build {:deps {io.github.clojure/tools.build {:git/tag "v0.5.0" :git/sha "7d77952"}}
-          :ns-default build}}}
+          :ns-default build}
+  :deploy {:extra-deps {slipset/deps-deploy {:mvn/version "RELEASE"}}
+           :exec-fn deps-deploy.deps-deploy/deploy
+           :exec-args {:installer :remote
+                       :sign-releases? true
+                       :artifact "vl-tcp-0.1.4.jar"}}}}
