@@ -31,19 +31,19 @@
 ;; ........................................................................
 ;; read fns
 ;; ........................................................................
-(defn read-eot [in i]
+(defn rd-eot [in i]
   (string/join (loop [c (.read in) v []]
                  (if (not= c i)
                    (recur (.read in) (conj v (char c)))
                    v))))
 
-(defn read-bytes [in n]
+(defn rd-bytes [in n]
   (into [] (for [_ (range n)] (.read in))))
 
-(defn read-line [in] (.readLine in))
+(defn rd-line [in] (.readLine in))
 
-(defn read-lines [in n]
-  (string/join (into [] (for [_ (range n)] (read-line in)))))
+(defn rd-lines [in n]
+  (string/join (into [] (for [_ (range n)] (rd-line in)))))
 
 ;; ........................................................................
 ;; write fns
@@ -67,7 +67,7 @@
         in-sock (in-socket sock)
         out-sock (out-socket sock)]
     (write-str out-sock "foo\n")
-    (prn  (read-line in-sock))
+    (prn  (rd-line in-sock))
     (close-socket sock)
     (close-socket in-sock)
     (close-socket out-sock)))
