@@ -25,7 +25,7 @@
 ;; gen, close sockets
 ;; ........................................................................
 (defn gen-socket
-  ([h p] (gen-socket h p 60000))
+  ([h p] (gen-socket h p 600000))
   ([h p t]
    (let [s (Socket. h p)]
      (.setSoTimeout s t)
