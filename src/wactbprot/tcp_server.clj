@@ -19,13 +19,18 @@
   (let [running (atom true)]
     (future (with-open [server-sock (ServerSocket. 9999)]
               (while @running
+                (prn "running")
                 (with-open [sock (.accept server-sock)]
-                  (s sock (r sock))))))
+                  (let [x (r sock)]
+                    (prn (str "read:" x))
+                    (Thread/sleep 1000)
+                    (s sock x)
+                    (prn "send back"))))))
     running))
 
 (comment
   ;; start server by
-  (def srv (server))
+  (def srv  (server))
   ;; stop server by
   (reset! srv false)
   ;; afterwards the server responses one more time!
