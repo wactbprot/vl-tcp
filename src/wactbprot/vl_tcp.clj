@@ -2,7 +2,11 @@
   ^{:author "Thomas Bock <wactbprot@gmail.com>"
     :doc "Provides basic socket functions such as open, close, read and write."}
   (:require [clojure.string :as string])
-  (:import [java.io BufferedReader OutputStreamWriter InputStreamReader PrintWriter]
+  (:import [java.io
+            BufferedReader
+            OutputStreamWriter
+            InputStreamReader
+            PrintWriter]
            [java.net Socket]))
 
 ;; ........................................................................
@@ -25,6 +29,8 @@
 ;; gen, close sockets
 ;; ........................................................................
 (defn gen-socket
+  "Generates a socket at host `h` and port `p`. If no timeout `t` is
+  given it defaults to 10min."
   ([h p] (gen-socket h p 600000))
   ([h p t]
    (let [s (Socket. h p)]
@@ -36,11 +42,33 @@
 ;; ........................................................................
 ;; read (rd) functions
 ;; ........................................................................
-(defn rd [s]
+(defn rd
+  "Tries to `.read` from given socket `s`.
+  Returns integers (like 97) that may be converted to chars.
+
+  Example:
+  ```clojure
+  (= \a (char 97))
+  ;; => true
+  ```  "
+  [s]
   (try (.read s)
        (catch Exception ex (.getMessage ex))))
 
-(defn rd-eot [in i]
+(defn rd-eot
+  "Reads from socket `in` until the integer `i` occurs.
+
+  Example:
+  ```clojure
+  (rd-eot in -1)
+  
+  ;; (int \a)
+  ;; =>
+  ;; 97
+  
+  (rd-eot in (int \n))
+  ``` "
+  [in i]
   (string/join (loop [c (rd in) v []]
                  (if (not= c i)
                    (recur (rd in) (conj v (char c)))
@@ -66,25 +94,3 @@
 (defn wrt-str [out cmd]
   (.print out cmd)
   (.flush out))
-
-;; ........................................................................
-;; playground
-;; ........................................................................
-(comment
-  ;;; run server in wactbprot.tcp-server ns
-  ;;; (def srv (server))
-
-  ;;; socket only lasts one cycle (?)
-  ;;; -> run entire let expression
-  (let [sock (gen-socket "localhost" 9999)
-        in-sock (in-socket sock)
-        out-sock (out-socket sock)]
-    (wrt-str out-sock "foo\n")
-    (Thread/sleep 20)
-    (prn  (rd-line in-sock)))
-
-
-  (close-socket sock)
-  (close-socket in-sock)
-  (close-socket out-sock)
-  )
